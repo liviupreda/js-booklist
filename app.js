@@ -24,6 +24,30 @@ UI.prototype.addBookToList = function(book) {
   list.appendChild(row);
 };
 
+// Show Alert
+UI.prototype.showAlert = function(message, className) {
+  // Construct the error element
+  // Create div
+  const div = document.createElement('div');
+  // Add class names; alert but also the passed in className
+  div.className = `alert ${className}`;
+  // Add text node
+  div.appendChild(document.createTextNode(message));
+  // Insert alert into the DOM
+  // First get parent
+  const container = document.querySelector('.container');
+  const form = document.querySelector('#book-form');
+
+  // Two args: what we want to insert (the div)
+  // And before what to insert it (the form)
+  container.insertBefore(div, form);
+
+  // Alert should disappear after 3 seconds
+  setTimeout(function() {
+    document.querySelector('.alert').remove();
+  }, 3000);
+};
+
 // Clear table fields after adding book
 UI.prototype.clearFields = function() {
   document.getElementById('title').value = '';
@@ -44,11 +68,20 @@ document.getElementById('book-form').addEventListener('submit', function(e) {
   // Instantiate UI object (in order to add the book to the table)
   const ui = new UI();
 
-  // Add book to list
-  ui.addBookToList(book);
+  // Validate (no empty fields)
+  if (title === '' || author === '' || isbn === '') {
+    // Error alert
+    ui.showAlert('Please fill in all fields', 'error');
+  } else {
+    // Add book to list
+    ui.addBookToList(book);
 
-  // Clear table fields after adding book
-  ui.clearFields();
+    // Show success message
+    ui.showAlert('Book added', 'success');
+
+    // Clear table fields after adding book
+    ui.clearFields();
+  }
 
   e.preventDefault();
 });
