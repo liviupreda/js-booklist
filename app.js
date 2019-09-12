@@ -48,6 +48,18 @@ UI.prototype.showAlert = function(message, className) {
   }, 3000);
 };
 
+// Delete book UI prototype method
+UI.prototype.deleteBook = function(target) {
+  if (target.classList.contains('delete')) {
+    // we want to delete the parent of the parent, which is the tr
+    // so go up to parent element twice
+    target.parentElement.parentElement.remove();
+
+    // show delete message
+    UI.prototype.showAlert('Book Removed', 'success');
+  }
+};
+
 // Clear table fields after adding book
 UI.prototype.clearFields = function() {
   document.getElementById('title').value = '';
@@ -55,7 +67,7 @@ UI.prototype.clearFields = function() {
   document.getElementById('isbn').value = '';
 };
 
-// Event Listeners
+// Event Listener for addBook
 document.getElementById('book-form').addEventListener('submit', function(e) {
   // Get form values
   const title = document.getElementById('title').value,
@@ -82,6 +94,19 @@ document.getElementById('book-form').addEventListener('submit', function(e) {
     // Clear table fields after adding book
     ui.clearFields();
   }
+
+  e.preventDefault();
+});
+
+// Event Listener for delete (EVENT DELEGATION, X has class 'delete')
+// => We use the parent of the X link, which is the tbody #book-list
+// we target the X specifically in a prototype method of the UI (deleteBook)
+document.getElementById('book-list').addEventListener('click', function(e) {
+  // Instantiate UI object (in order to remove the book to the table)
+  const ui = new UI();
+
+  // Delete Book
+  ui.deleteBook(e.target);
 
   e.preventDefault();
 });
